@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <style type="text/css">
+         body, html {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+
+            background-color: #f5f5f5;
+            font-family: 'Open Sans', sans-serif;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        .card {
+            margin: 150px auto;
+            max-width: 470px;
+            background-color: #fff;
+
+            -webkit-box-shadow: 0px 0px 15px 11px rgba(1,191,165,0.11); 
+            box-shadow: 0px 0px 15px 11px rgba(1,191,165,0.11);
+        }
+
+        .topInfo {
+            display: flex;
+            padding: 30px;
+            }
+
+        .topInfo div:first-of-type {
+            max-width: 50px;
+        }
+
+        .topInfo div:nth-of-type(3) {
+            max-width: 50px;
+            text-align: right;
+        }
+
+        .topInfo div:nth-of-type(2) { 
+            flex-grow: 1;
+            text-align: center;
+            padding-top: 10px;
+            line-height: 26px;
+        }
+
+        .topInfo .item + .item { 
+            margin-left: 2%; 
+        }
+
+        small {
+            color: #899da7;
+            font-size: 14px;
+        }
+        .cover {
+            display: block;
+            margin: auto;
+            -webkit-box-shadow: 0px 0px 37px 18px rgba(182,182,182,0.63); 
+            box-shadow: 0px 0px 37px 18px rgba(182,182,182,0.63);        
+            margin-bottom: 23px;
+            transition: transform .7s;
+            width: 236px;
+            height: 236px;
+        }
+
+        .cover:hover {
+            -ms-transform: scale(1.1); /* IE 9 */
+            -webkit-transform: scale(1.1); /* Safari 3-8 */
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        progress {
+            border: 0px;
+            border-radius: 10px;
+            height: 5px;
+        }
+        progress::-moz-progress-bar { background: #01bfa5; border: 0px; z }
+        progress::-webkit-progress-value { background: #01bfa5; }
+        progress { color: #01bfa5; }
+    
+        .playTime {
+            width: 85%; 
+            margin: auto; 
+            font-size: 14px; 
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .playTime span:last-of-type {
+            display: block;
+            float: right;
+        }
+
+        .controls {
+        display: flex;
+        width: 75%;
+        margin: auto;
+
+        justify-content: space-evenly; 
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+
+        }
+
+        svg:hover {
+            stroke: #01bfa5;
+        }
+
+        .controls > div {
+        padding: 8px;
+        }
+
+        svg {
+            cursor: pointer;
+        }
+
+        .playNow {
+	        background-image: url("data:image/svg+xml,%3Csvg fill='%23000000' height='56px' width='56px' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 60 60' xml:space='preserve'%3E%3Cg%3E%3Cpath d='M45.563 29.174l-22-15c-0.307-0.208-0.703-0.231-1.031-0.058C22.205 14.289 22 14.629 22 15v30 c0 0.371 0.205 0.711 0.533 0.884C22.679 45.962 22.84 46 23 46c0.197 0 0.394-0.059 0.563-0.174l22-15 C45.836 30.64 46 30.331 46 30S45.836 29.36 45.563 29.174z M24 43.107V16.893L43.225 30L24 43.107z'/%3E%3Cpath d='M30 0C13.458 0 0 13.458 0 30s13.458 30 30 30s30-13.458 30-30S46.542 0 30 0z M30 58C14.561 58 2 45.439 2 30 S14.561 2 30 2s28 12.561 28 28S45.439 58 30 58z'/%3E%3C/g%3E%3C/svg%3E ");
+            width: 56px;
+            height: 56px;
+            cursor: pointer;
+        }
+
+        .pauseNow {
+	        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 24 24' stroke-width='1' stroke='%23000000' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Crect x='6' y='5' width='4' height='14' rx='1' /%3E%3Crect x='14' y='5' width='4' height='14' rx='1' /%3E%3C/svg%3E");
+            width: 56px;
+            height: 56px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="topInfo">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="36" height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="#465a63" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <line x1="4" y1="6" x2="20" y2="6" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+            </div>
+            <div>
+                <small>NOW PLAYING</small><br>
+                <span style="font-size: 18px;" id="songTitle">Someone Lived This</span><br>
+                <small id="artist">- Alex MakeMusic -</small>
+            </div>
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-playlist" width="36" height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="#465a63" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="14" cy="17" r="3" />
+                    <path d="M17 17v-13h4" />
+                    <path d="M13 5h-10" />
+                    <line x1="3" y1="9" x2="13" y2="9" />
+                    <path d="M9 13h-6" />
+                  </svg>
+            </div>
+        </div>
+        <img src="https://cdn.pixabay.com/audio/2022/08/04/08-56-45-239_200x200.jpg" class="cover">
+        <br>
+        <progress id="seekbar" value="0" max="1" value="0" style="width: 85%; margin:auto; display: block;"></progress>
+        <div class="playTime">
+            <span>&nbsp;</span>
+            <span>&nbsp;</span>
+        </div>
+        <br>
+        <div class="controls">
+            <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" stroke-width="1" stroke="#465a63" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" />
+                <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" />
+              </svg>
+            </div>
+            <div>
+              <svg id="pre" onclick="pre()" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" stroke-width="1" stroke="#465a63" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M20 5v14l-12 -7z" />
+                <line x1="4" y1="5" x2="4" y2="19" />
+              </svg>
+            </div>
+            <div>
+                <div class="playNow" id='play' onclick='playOrPauseSong()'></div>
+            </div>
+            <div>
+              <svg id="next" onclick="next()" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" stroke-width="1" stroke="#465a63" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M4 5v14l12 -7z" />
+                <line x1="20" y1="5" x2="20" y2="19" />
+              </svg>
+            </div>
+            <div>
+                <svg fill="#465a63" height="32px" width="32px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 49.7 49.7" xml:space="preserve">
+
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                    
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.09940000000000002"/>
+                    
+                    <g id="SVGRepo_iconCarrier"> <g> <path d="M27,13.85h9v8.964l13.7-9.964L36,2.886v8.964h-9c-7.168,0-13,5.832-13,13c0,6.065-4.935,11-11,11H1c-0.553,0-1,0.447-1,1 s0.447,1,1,1h2c7.168,0,13-5.832,13-13C16,18.785,20.935,13.85,27,13.85z M38,6.814l8.3,6.036L38,18.886V6.814z"/> <path d="M1,13.85h2c2.713,0,5.318,0.994,7.336,2.799c0.191,0.171,0.43,0.255,0.667,0.255c0.274,0,0.548-0.112,0.745-0.333 c0.368-0.412,0.333-1.044-0.078-1.412C9.285,13.025,6.206,11.85,3,11.85H1c-0.553,0-1,0.447-1,1S0.447,13.85,1,13.85z"/> <path d="M36,35.85h-9c-2.685,0-5.27-0.976-7.278-2.748c-0.411-0.365-1.044-0.327-1.411,0.089c-0.365,0.414-0.326,1.046,0.089,1.411 c2.374,2.095,5.429,3.248,8.601,3.248h9v8.964l13.7-9.964L36,26.886V35.85z M38,30.814l8.3,6.036L38,42.886V30.814z"/> </g> </g>
+                    
+                    </svg>
+            </div>
+        </div>
+        <br>
+        <div class="playlistRow" onclick="playFromPlaylist(0)">
+            <div><div class="dot">&#x2022;</div>Down Town</div>
+            <div class="totalTime">1:13</div>
+        </div>
+        <div class="playlistRow" onclick="playFromPlaylist(1)">
+            <div><div class="dot">&#x2022;</div>Summer Nights</div>
+            <div class="totalTime">02:40</div>
+        </div>
+        <div class="playlistRow" onclick="playFromPlaylist(2)">
+            <div><div class="dot">&#x2022;</div>Broke Me</div>
+            <div class="totalTime">03:22</div>
+        </div>
+        <div class="playlistRow" onclick="playFromPlaylist(3)">
+            <div><div class="dot">&#x2022;</div>Future Bass</div>
+            <div class="totalTime">02:19</div>
+        </div>
+        <br>
+        <div style="text-align: center;"><a href="https://www.twitter.com/neluttu" style="text-decoration: none; color: #01bfa5;">@neluttu</a></div>
+        <script type="text/javascript">
+            $('.dot').hide();
+            var songs = ["https://cdn.pixabay.com/download/audio/2022/01/28/audio_be2ba160f8.mp3?filename=eastern-trap-groove-15883.mp3", 
+                        "https://cdn.pixabay.com/download/audio/2022/10/02/audio_c216ad4a20.mp3?filename=summer-nights-tropical-house-music-121570.mp3", 
+                        "https://cdn.pixabay.com/download/audio/2022/07/17/audio_e14ca08421.mp3?filename=broke-me-115146.mp3", 
+                        "https://cdn.pixabay.com/download/audio/2022/05/17/audio_fbc5d63bc7.mp3?filename=future-bass-hot-night-111447.mp3"];
+
+            var poster = ["https://cdn.pixabay.com/audio/2022/08/04/08-56-45-239_200x200.jpg", 
+                        "https://cdn.pixabay.com/audio/2022/10/02/09-06-35-178_200x200.jpg", 
+                        "https://cdn.pixabay.com/audio/2022/07/17/14-41-14-378_200x200.jpg", 
+                        "https://cdn.pixabay.com/audio/2022/05/17/20-35-00-870_200x200.jpg"];
+
+            var artist = ["Alex MakeMusic",
+                        "Music Unlimited",
+                        "FASSounds",
+                        "AlexGrohl"
+                        ];
+
+            var titles = ["Down Town", 
+                        "Summer Nights", 
+                        "Broke Me", 
+                        "Future Bass"];
+
+            var songTitle = document.getElementById("songTitle");
+            var artistName = document.getElementById("artist");
+            var fillBar = document.getElementById("fill");
+
+            
+            var song = new Audio();
+            var currentSong = 0;
+            songTitle.textContent = titles[currentSong];
+            
+            function playSong() {
+                song.src = songs[currentSong];
+                songTitle.textContent = titles[currentSong];
+                artistName.textContent = artist[currentSong];
+                $(".cover").attr("src",poster[currentSong]);
+                song.play();
+            }
+
+            function playFromPlaylist(songg) {
+                song.src = songs[songg];
+                songTitle.textContent = titles[songg];
+                artistName.textContent = artist[currentSong];
+
+                if(song.paused) {
+                    currentSong = songg;
+                   playSong();
+
+                   $("#play").addClass("pauseNow");
+                   $("#play").removeClass("playNow");
+
+                   $(".playlistRow").removeClass("nowPlaying");
+                   $(".dot").hide(); // hide other nowplaying dots
+                   $(".playlistRow:eq("+songg+")").addClass("nowPlaying"); // make now playing bold text
+                   $(".dot:eq("+songg+")").show("nowPlaying"); // show now playing dot
+                   $(".cover").attr("src",poster[songg]); // set the poster
+               }
+               else {
+                   song.pause();
+                   $("#play").addClass("playNow");
+                   $("#play").removeClass("pauseNow");
+               }
+            }
+
+           function playOrPauseSong(){
+               if(song.paused) {
+                   playSong();
+                   $("#play").addClass("pauseNow");
+                   $("#play").removeClass("playNow");
+               }
+               else {
+                   song.pause();
+                   $("#play").addClass("playNow");
+                   $("#play").removeClass("pauseNow");
+               }
+           }
+    
+           song.addEventListener('timeupdate',function(){
+
+                var showCurrentTime = new Date(this.currentTime * 1000).toISOString().substring(14, 19);
+                var showTotalTime = new Date(this.duration * 1000).toISOString().substring(14, 19);
+
+              $('#seekbar').attr("value", this.currentTime / this.duration);
+              $('.playTime span:first-of-type').text(showCurrentTime);
+              $('.playTime span:nth-of-type(2)').text(showTotalTime);
+           });
+    
+    
+           function next(){
+                currentSong++;
+                if(currentSong > songs.length - 1){
+                    currentSong = 0;
+                }
+                playSong();
+                $("#play").removeClass("playNow");
+                $("#play").addClass("pauseNow");
+
+                $(".playlistRow").removeClass("nowPlaying");
+                $(".dot").hide(); // hide other nowplaying dots
+
+                $(".dot:eq("+currentSong+")").show("nowPlaying"); // show now playing dot
+                $(".playlistRow:eq("+currentSong+")").addClass("nowPlaying"); // make now playing bold text
+
+
+                $(".poster").attr("src",poster[currentSong]);
+           }
+    
+           function pre(){
+               currentSong--;
+               if(currentSong < 0){
+                   currentSong = songs.length - 1;
+               }
+               playSong();
+
+               $("#play").removeClass("playNow");
+               $("#play").addClass("pauseNow");
+
+               $(".playlistRow").removeClass("nowPlaying");
+               $(".dot").hide(); // hide other nowplaying dots
+               $(".playlistRow:eq("+currentSong+")").addClass("nowPlaying"); // make now playing bold text
+               $(".dot:eq("+currentSong+")").show("nowPlaying"); // show now playing dot
+
+               $(".poster").attr("src",poster[currentSong]);
+           }
+        </script>
+    <br><br>
+    </div>    
+
+</body>
+</html>

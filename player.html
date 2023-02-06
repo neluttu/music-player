@@ -1,0 +1,83 @@
+<header id="about">
+    
+    
+
+<div id="main">
+    <div id="image">
+        <img src="/images/J&amp;G Logo.png">
+    </div>
+    <div id="player">
+        <div output="" id="songTitle">I'm On My Way</div>
+            <div id="buttons">
+                <button id="pre" onclick="pre()">&lt;</button>
+                <button id="play" onclick="playOrPauseSong()">PLAY</button>
+                <button id="next" onclick="next()">&gt;</button>
+        </div>
+    </div>
+
+<progress id="seekbar" value="0.05109950165338493" max="1" style="width:200px;"></progress>
+</div>
+    <script type="text/javascript">
+        var songs = ["https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"];
+var poster = ["/images/J&G Logo.png", "/images/J&G Logo.png", "/images/J&G Logo.png", "/images/J&G Logo.png", "/images/J&G Logo.png", "/images/J&G Logo.png", "/images/J&G Logo.png"];
+var titles = ["I'm On My Way", "Rolling In The Deep", "Mad World", "Too Close", "Feelin' Good", "I Will Wait", "All These Things That I've Done"]
+
+var songTitle = document.getElementById("songTitle");
+var fillBar = document.getElementById("fill");
+
+var song = new Audio();
+var currentSong = 0;
+songTitle.textContent = titles[currentSong];
+
+function playSong(){
+
+   song.src = songs[currentSong];
+
+   songTitle.textContent = titles[currentSong];
+
+   song.play();
+}
+       function playOrPauseSong(){
+           if(song.paused){
+               playSong();
+               $("#play img").attr("src","/images/Pause.png");
+           }
+           else{
+               song.pause();
+               $("#play img").attr("src","/Images/Play.png");
+           }
+       }
+
+       song.addEventListener('timeupdate',function(){
+          $('#seekbar').attr("value", this.currentTime / this.duration);
+       });
+
+
+       function next(){
+           currentSong++;
+           if(currentSong > songs.length - 1){
+               currentSong = 0;
+           }
+           playSong();
+           $("#play img").attr("src","/images/Pause.png");
+           $("#image img").attr("src",poster[currentSong]);
+           $("#bg img").attr("src",poster[currentSong]);
+       }
+
+       function pre(){
+           currentSong--;
+           if(currentSong < 0){
+               currentSong = songs.length - 1;
+           }
+           playSong();
+           $("#play img").attr("src","/images/Pause.png");
+           $("#image img").attr("src",poster[currentSong]);
+           $("#bg img").attr("src",poster[currentSong]);
+       }
+       
+       function countProgress(event) {
+          
+       }
+    </script>
+
+</header>
