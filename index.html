@@ -363,6 +363,7 @@
                 songTitle.textContent = titles[currentSong];
                 artistName.textContent = artist[currentSong];
                 $(".cover").attr("src",poster[currentSong]);
+                
                 $(".playlistRow").removeClass("nowPlaying");
                    $(".dot").hide(); // hide other nowplaying dots
                    $(".playlistRow:eq("+currentSong+")").addClass("nowPlaying"); // make now playing bold text
@@ -431,6 +432,7 @@
                     }
                     else playSong();
                 }
+                else playSong();
             }
            });
     
